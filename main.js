@@ -49,20 +49,21 @@ function calculateDistance(x1, y1, x2, y2) {
 }
 
 class Obstacles{
-    constructor(x, y, dx, radius,color,p1/*,p2,p3*/) {
+    constructor(x, y, dx, radius,color,p1/*,p2,p3*/,ai1,ai2) {
         this.x = x;
         this.dx = dx;
         this.y = y;
         this.radius = radius;
         this.color = color;
         this.p1 = p1;
+        this.ai1 = ai1;
+        this.ai2 = ai2;
         //this.p2 = p2;
         //this.p3 = p3;
         //for debuging only
         this.temColor1 = this.p1.color;
         //this.temColor2 = this.p2.color;
         //this.temColor3 = this.p3.color;
-        this.num = Math.random();
     }
     
     update(){
@@ -77,6 +78,13 @@ class Obstacles{
             this.p1.color = this.temColor1;
         }
 
+        if (calculateDistance(this.ai1.x,this.ai1.y,this.x,this.y) < this.ai1.radius+this.radius + 30){
+            this.ai1.jump();
+        }
+        
+        if (calculateDistance(this.ai2.x,this.ai2.y,this.x,this.y) < this.ai2.radius+this.radius + 30){
+            this.ai2.jump();
+        }
         //Character 2
         /*
         if (calculateDistance(this.p2.x,this.p2.y,this.x,this.y) < this.p2.radius+this.radius){
@@ -175,13 +183,23 @@ function init() {
     p1 = new Player(100, 300, 1, 1, 30, 'red', gravity, friction, false, canvas.height);
     ai1 = new Ai(200, 300, 1, 1, 30, 'grey', gravity, friction, false, canvas.height);
     ai2 = new Ai(300, 300, 1, 1, 30, 'grey', gravity, friction, false, canvas.height);
-    obs = new Obstacles(600,570,2,10,'black',p1);
+    obs = new Obstacles(600,570,2,10,'black',p1,ai1,ai2);
 }
 
 function animate() {
     requestAnimationFrame(animate);
 
     c.clearRect(0, 0, canvas.width, canvas.height);
+    c.beginPath();
+    c.font = "30px Arial";
+    c.fillText("ai1",ai1.x,ai1.y - 40);
+    c.closePath();
+
+    c.beginPath();
+    c.font = "30px Arial";
+    c.fillText("ai2",ai2.x,ai2.y - 40);
+    c.closePath();
+
     p1.update();
     ai1.update();
     ai2.update();
