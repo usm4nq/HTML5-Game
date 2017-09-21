@@ -200,6 +200,11 @@ function animate() {
     c.fillText("ai2",ai2.x,ai2.y - 40);
     c.closePath();
 
+    c.beginPath();
+    c.font = "30px Arial";
+    c.fillText("Press Right Arrow",p1.x,p1.y - 90);
+    c.closePath();
+
     p1.update();
     ai1.update();
     ai2.update();
