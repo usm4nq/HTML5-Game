@@ -17,7 +17,7 @@ var mouse = {
 window.addEventListener('mousemove', function(event){
     mouse.x = event.x;
     mouse.y = event.y;
-})
+});
 
 //Physics
 var gravity = 0.5;
@@ -27,6 +27,9 @@ var jumpForce = -10;
 //Floor height diffrence
 var floorH = 200;
 
+var pImage = new Image();
+pImage.src = "pImage.png";
+
 //for debugging   --will be removed at release time--
 console.log(canvas)
 
@@ -35,6 +38,12 @@ window.addEventListener('keydown', function (event) {
     
     //right arrow
     if (event.keyCode == 39 && p1.grounded == true) {
+        p1.jump();
+    }
+});
+
+canvas.addEventListener("mousedown", function(e){
+    if (e.button == 0 && p1.grounded){
         p1.jump();
     }
 });
@@ -128,6 +137,12 @@ class Circle_PO{
         this.friction = friction;
         this.radius = radius;
         this.grounded;
+        this.frameSpaceX = 280;
+        this.frameSpaceY = 385;
+        this.sx = 0;
+        this.sy = 0;
+        this.tickCount = 0;
+        this.frameCount = 0;
     }
 
     update(){
@@ -146,6 +161,7 @@ class Circle_PO{
 
         }
 
+        
         this.y += this.dy;
         this.draw();
     }   
@@ -155,6 +171,7 @@ class Circle_PO{
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         c.strokeStyle = this.color;
         c.stroke();
+        c.drawImage(pImage,this.sx,this.sy,280,385,this.x - 30,this.y - 68,80,100);
     }
 }
 
@@ -164,6 +181,30 @@ class Circle_PO{
 class Player extends Circle_PO{
     jump() {
         this.dy = jumpForce;
+    }
+    renderPlayer(){
+        
+        this.tickCount += 1;
+        if (this.tickCount > 3){
+            if (this.frameCount < 4){
+                this.sx += this.frameSpaceX;
+            }
+            if (this.frameCount == 4){
+                this.sx = 0;
+                this.sy = this.frameSpaceY;
+            }
+            if (this.frameCount > 4){
+                this.sx += this.frameSpaceX;
+            }
+            this.tickCount = 0;
+            this.frameCount++;
+        }
+        if (this.frameCount > 9){
+            this.sx = 0;
+            this.sy = 0;
+            this.frameCount = 0;
+        }
+
     }
 }
 
@@ -188,7 +229,7 @@ function init() {
 
 function animate() {
     requestAnimationFrame(animate);
-
+    p1.renderPlayer();
     c.clearRect(0, 0, canvas.width, canvas.height);
     c.beginPath();
     c.font = "30px Arial";
